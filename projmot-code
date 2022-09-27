@@ -1,0 +1,58 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from statistics import mean
+
+%matplotlib inline
+
+
+#Create arrays for your data
+
+theta_array = np.array((35-6,35-3,35,35+3,35+6))
+
+y1 = mean((40,40.3,41.6,40,38.9))
+y2 = mean((60,59,61.8,62.8,62.2))
+y3 = mean((72.5,68.5,68.5,71.5,69.5))
+y4 = mean((80,79.5,77.5,78.5,78.8))
+y5 = mean((78.8,79.4,81.6,81.0,78.0))
+
+ymean_array = (y1,y2,y3,y4,y5)
+#Create an array for your y-axis uncertainties
+
+yerr_array = (.1,.1,.1,.1,.1)
+
+#Reassign variables
+x = theta_array
+y = ymean_array
+dy = yerr_array
+
+#size the plot
+plt.figure(figsize=(15,10))
+
+#create scatter plot
+plt.scatter(x, y, color='blue', marker='o')
+
+#create labels
+plt.xlabel('$\\theta$ (degrees)')
+plt.ylabel('$y_{mean}$ (m)')
+plt.title('Height on wall vs Launcher Angle')
+
+#fitting to a 2nd degree polynomial
+c,b,a=np.polynomial.polynomial.polyfit(x,y,2,w=dy)
+
+#Annotate with values of A, B, C from best fit polynomial
+plt.annotate('A = {value:.{digits}E}'.format(value=a, digits=3),
+             (0.05, 0.9), xycoords='axes fraction')
+
+plt.annotate('B = {value:.{digits}E}'.format(value=b, digits=3),
+             (0.05, 0.85), xycoords='axes fraction')
+             
+plt.annotate('C = {value:.{digits}E}'.format(value=c, digits=3),
+             (0.05, 0.8), xycoords='axes fraction')
+#Create fit line
+xnew = np.linspace(x.min(), x.max(), 300)
+fit = a*xnew**2 + b*xnew +c
+
+plt.scatter(xnew, fit, color='red')
+plt.show()
+
+print ("C = ",c , "B = ",b, "A = ",a)
